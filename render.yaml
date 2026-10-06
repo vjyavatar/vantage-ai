@@ -3,6 +3,8 @@ services:
     name: vantage-ai
     runtime: python
     plan: free
+    branch: main
+    autoDeploy: true
     buildCommand: pip install -r requirements.txt
     startCommand: python commercial_server.py
     healthCheckPath: /health
