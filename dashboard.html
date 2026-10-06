@@ -16,7 +16,8 @@ h1{font-size:1.8rem;letter-spacing:-.03em}h1 em{color:var(--green);font-style:no
 @media(max-width:800px){.gap,.steps,.kpis{grid-template-columns:1fr}}
 .box{background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:16px}.box strong{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}.big{font-size:1.7rem;font-weight:750;margin-top:6px}.green{color:var(--green)}.yellow{color:var(--yellow)}.blue{color:var(--blue)}
 .btn{display:inline-block;background:var(--green);color:#04110a;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:700;margin-right:8px;border:0;cursor:pointer}
-.stage{position:relative;background:#0d1117;border:1px solid var(--border);border-radius:12px;min-height:280px;overflow:hidden}
+video{width:100%;border-radius:12px;background:#000;border:1px solid var(--border);margin-bottom:12px}
+.stage{position:relative;background:#0d1117;border:1px solid var(--border);border-radius:12px;min-height:220px;overflow:hidden}
 .slide{position:absolute;inset:0;padding:36px;opacity:0;transition:opacity .4s}.slide.on{opacity:1}
 .kicker{color:var(--green);font-size:.75rem;font-weight:700;letter-spacing:.08em}.slide h3{font-size:1.6rem;margin:8px 0}.slide p{color:var(--muted);max-width:640px}
 .bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#2a3544}.bar i{display:block;height:100%;background:var(--green);width:0}
@@ -34,15 +35,8 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 6px;
 </section>
 <section class="card" id="video">
 <h2>How to use it</h2>
-<div class="stage" id="stage">
-<div class="slide on"><div class="kicker">00:00</div><h3>Change one URL</h3><p>Keep the app. Point the OpenAI client at this host /v1. No new SDK.</p></div>
-<div class="slide"><div class="kicker">00:04</div><h3>One key per team</h3><p>Support, agents, and internal tools stay on separate books.</p></div>
-<div class="slide"><div class="kicker">00:08</div><h3>Both sides are priced</h3><p>A cheaper model and a stronger model update the running average after every fill.</p></div>
-<div class="slide"><div class="kicker">00:12</div><h3>Lock only with an edge</h3><p>If the blended cost is not below your price, it is not marked as saved.</p></div>
-<div class="slide"><div class="kicker">00:16</div><h3>Read the gap</h3><p>Direct price, Vantage cost, and percent saved stay on this page for every team.</p></div>
-<div class="bar"><i id="prog"></i></div>
-</div>
-<div class="controls"><button class="btn" id="play">Play</button><span id="timer">0:00 / 0:20</span></div>
+<video controls playsinline preload="metadata" src="/how-to-use.mp4"></video>
+<p style="color:#8b9cb3;font-size:.85rem">Video file: change the URL, one key per team, lock a job only when the blended cost is lower.</p>
 </section>
 <section class="card"><h2>Configure in 3 steps</h2><div class="steps"><div class="box"><strong>1. Base URL</strong><p>https://vantage-ai-3dti.onrender.com/v1</p></div><div class="box"><strong>2. Team key</strong><p>sk-arb-demo-free, or one key per client</p></div><div class="box"><strong>3. Watch the gap</strong><p>The table updates as jobs complete</p></div></div></section>
 <div class="kpis"><div class="box"><strong>Savings locked</strong><div class="big green" id="rev">$0.00</div></div><div class="box"><strong>Customer value</strong><div class="big blue" id="in">$0.00</div></div><div class="box"><strong>Provider costs</strong><div class="big yellow" id="out">$0.00</div></div><div class="box"><strong>Jobs</strong><div class="big" id="jobs">0</div></div></div>
@@ -50,10 +44,6 @@ table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 6px;
 <section class="card"><h2>Client cost difference</h2><table><thead><tr><th>Team</th><th>Direct</th><th>Vantage</th><th>Saved</th><th>Why it matters</th></tr></thead><tbody id="clients"></tbody></table></section>
 </main>
 <script>
-const slides=[...document.querySelectorAll('.slide')];let n=0,playing=true,t0=Date.now();
-function show(i){n=i%slides.length;slides.forEach((s,j)=>s.classList.toggle('on',j===n));}
-function tick(){const elapsed=(Date.now()-t0)/1000;const sec=Math.min(20,elapsed%20);document.getElementById('timer').textContent=Math.floor(sec/60)+':' + String(Math.floor(sec%60)).padStart(2,'0') + ' / 0:20';document.getElementById('prog').style.width=(sec/20*100)+'%';if(playing && Math.floor(elapsed/4)%slides.length!==n) show(Math.floor(elapsed/4)%slides.length);}
-setInterval(tick,200);document.getElementById('play').onclick=()=>{playing=!playing;document.getElementById('play').textContent=playing?'Pause':'Play';if(playing)t0=Date.now()-n*4000;};
 const clients=[["Acme support","$4,200","$2,900","31%","Ticket bots stay on, invoice drops"],["Northwind agents","$8,750","$6,650","24%","Agent traffic no longer pays list price"],["Internal tools","$1,180","$970","18%","Small teams still see a visible gap"]];
 document.getElementById('clients').innerHTML=clients.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('');
 const c1=new Chart(document.getElementById('c1'),{type:'line',data:{labels:[],datasets:[{label:'Customer value',data:[],borderColor:'#3b82f6',tension:.3,pointRadius:0},{label:'Provider cost',data:[],borderColor:'#eab308',tension:.3,pointRadius:0},{label:'Savings',data:[],borderColor:'#22c55e',tension:.3,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b9cb3'}}},scales:{x:{ticks:{color:'#8b9cb3',maxTicksLimit:6},grid:{color:'#2a3544'}},y:{ticks:{color:'#8b9cb3'},grid:{color:'#2a3544'}}}}});
