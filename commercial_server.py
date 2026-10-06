@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 """Vantage AI dashboard and OpenAI-compatible API."""
 from __future__ import annotations
-import base64, json, logging, os, random, sys, threading, time, uuid
+import base64, json, logging, os, random, sys, threading, time
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
-from typing import Any
 from urllib.parse import urlparse, parse_qs
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
@@ -12,10 +11,11 @@ from agents.orchestrator import OrchestratorAgent
 from core.metrics import MetricsStore
 from core.config import LOGS_DIR
 from core.providers import get_available_providers
-from core.stripe_billing import stripe_configured, create_checkout_session, retrieve_session, grant_credits, payment_summary
+from core.stripe_billing import stripe_configured, create_checkout_session, payment_summary
 
 HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", "8080"))
+SITE = "https://vantage-ai-3dti.onrender.com"
 logging.basicConfig(level=logging.INFO, format="%(asctime)s | %(levelname)s | %(message)s", handlers=[logging.StreamHandler(sys.stdout), logging.FileHandler(LOGS_DIR / "commercial.log", mode="a")])
 logger = logging.getLogger("vantage")
 orch = OrchestratorAgent()
@@ -33,6 +33,13 @@ def load_video():
     return base64.b64decode("".join(p.read_text().strip() for p in parts))
 
 VIDEO = load_video()
+ROBOTS = "User-agent: *\nAllow: /\nSitemap: " + SITE + "/sitemap.xml\n"
+SITEMAP = """<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url><loc>https://vantage-ai-3dti.onrender.com/</loc></url>
+  <url><loc>https://vantage-ai-3dti.onrender.com/pricing</loc></url>
+</urlset>
+"""
 
 def background_traffic():
     prompts = ["Implement a rate limiter", "Explain CAP theorem", "Write binary search", "Design a todo API"]
@@ -60,29 +67,28 @@ PRICING_HTML = open(ROOT / "pricing.html", encoding="utf-8").read()
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
         logger.info("%s - %s", self.address_string(), fmt % args)
+    def _send(self, code, body, content_type):
+        raw = body if isinstance(body, bytes) else body.encode()
+        self.send_response(code)
+        self.send_header("Content-Type", content_type)
+        self.send_header("Content-Length", str(len(raw)))
+        self.end_headers()
+        self.wfile.write(raw)
     def _json(self, code, payload):
-        body = json.dumps(payload, default=str).encode()
-        self.send_response(code)
-        self.send_header("Content-Type", "application/json")
-        self.send_header("Content-Length", str(len(body)))
-        self.send_header("Access-Control-Allow-Origin", "*")
-        self.end_headers()
-        self.wfile.write(body)
+        self._send(code, json.dumps(payload, default=str), "application/json")
     def _html(self, html, code=200):
-        body = html.encode()
-        self.send_response(code)
-        self.send_header("Content-Type", "text/html; charset=utf-8")
-        self.send_header("Content-Length", str(len(body)))
-        self.end_headers()
-        self.wfile.write(body)
+        self._send(code, html, "text/html; charset=utf-8")
     def do_GET(self):
         path = urlparse(self.path).path.rstrip("/") or "/"
+        if path == "/robots.txt":
+            self._send(200, ROBOTS, "text/plain"); return
+        if path == "/sitemap.xml":
+            self._send(200, SITEMAP, "application/xml"); return
         if path == "/how-to-use.mp4":
             body = VIDEO
             self.send_response(200 if body else 404)
             self.send_header("Content-Type", "video/mp4")
             self.send_header("Content-Length", str(len(body)))
-            self.send_header("Accept-Ranges", "bytes")
             self.end_headers()
             self.wfile.write(body)
             return
@@ -96,8 +102,7 @@ class Handler(BaseHTTPRequestHandler):
             self._json(200, metrics.snapshot()); return
         if path == "/api/system":
             avail = get_available_providers()
-            html = " ".join(f'<span class="pill {"ok" if v else "warn"}">{k}</span>' for k, v in avail.items())
-            self._json(200, {"providers": avail, "providers_html": html, "stripe": stripe_configured(), "real_answers": any(avail.values()), "payments": payment_summary()}); return
+            self._json(200, {"providers": avail, "stripe": stripe_configured(), "payments": payment_summary()}); return
         if path == "/success":
             self._html("<html><body style='font-family:system-ui;background:#0f1419;color:#f0f4f8;padding:40px'><h1>Payment received</h1><p><a href='/'>Dashboard</a></p></body></html>"); return
         self._json(404, {"error": "not found"})
@@ -121,7 +126,7 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     threading.Thread(target=background_traffic, daemon=True).start()
     server = ThreadingHTTPServer((HOST, PORT), Handler)
-    logger.info("Vantage AI on %s:%s video=%s", HOST, PORT, len(VIDEO))
+    logger.info("Vantage AI on %s:%s", HOST, PORT)
     server.serve_forever()
 
 if __name__ == "__main__":
