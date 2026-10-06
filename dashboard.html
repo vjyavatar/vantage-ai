@@ -3,49 +3,67 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Vantage AI – See the cost gap</title>
+<title>Vantage AI – Pay less for the same AI work</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{--bg:#0f1419;--card:#1a2332;--border:#2a3544;--text:#f0f4f8;--muted:#8b9cb3;--green:#22c55e;--blue:#3b82f6;--yellow:#eab308}
-*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
-header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.55}
+header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0;z-index:2}
 .logo{font-weight:700;font-size:1.2rem}.logo span{color:var(--green)}.badge{background:rgba(34,197,94,.12);color:var(--green);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700}
 .wrap{max-width:1100px;margin:0 auto;padding:24px 20px 56px}.hero,.card{background:#1a2332;border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px}
-h1{font-size:1.8rem;letter-spacing:-.03em}h1 em{color:var(--green);font-style:normal}.lead{color:var(--muted);margin:10px 0 16px}
-.gap,.steps,.kpis{display:grid;gap:12px}.gap,.steps{grid-template-columns:1fr 1fr 1fr}.kpis{grid-template-columns:repeat(4,1fr)}
-@media(max-width:800px){.gap,.steps,.kpis{grid-template-columns:1fr}}
-.box{background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:16px}.box strong{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}.big{font-size:1.7rem;font-weight:750;margin-top:6px}.green{color:var(--green)}.yellow{color:var(--yellow)}.blue{color:var(--blue)}
-.btn{display:inline-block;background:var(--green);color:#04110a;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:700;margin-right:8px;border:0;cursor:pointer}
-video{width:100%;border-radius:12px;background:#000;border:1px solid var(--border);margin-bottom:12px}
-.stage{position:relative;background:#0d1117;border:1px solid var(--border);border-radius:12px;min-height:220px;overflow:hidden}
-.slide{position:absolute;inset:0;padding:36px;opacity:0;transition:opacity .4s}.slide.on{opacity:1}
-.kicker{color:var(--green);font-size:.75rem;font-weight:700;letter-spacing:.08em}.slide h3{font-size:1.6rem;margin:8px 0}.slide p{color:var(--muted);max-width:640px}
-.bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#2a3544}.bar i{display:block;height:100%;background:var(--green);width:0}
-.controls{display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--muted);font-size:.85rem}
+h1{font-size:2rem;letter-spacing:-.03em;line-height:1.2}h1 em{color:var(--green);font-style:normal}.lead{color:var(--muted);margin:12px 0 16px;max-width:740px;font-size:1.05rem}
+.gap,.steps,.kpis,.analogies{display:grid;gap:12px}.gap,.steps,.analogies{grid-template-columns:1fr 1fr 1fr}.kpis{grid-template-columns:repeat(4,1fr)}
+@media(max-width:800px){.gap,.steps,.kpis,.analogies{grid-template-columns:1fr}}
+.box{background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:16px}.box strong{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}.big{font-size:1.7rem;font-weight:750;margin-top:6px}.green{color:var(--green)}.yellow{color:var(--yellow)}.blue{color:var(--blue)}
+.btn{display:inline-block;background:var(--green);color:#04110a;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:700;margin-right:8px}
+h2{font-size:1.15rem;margin-bottom:8px}p.note{color:var(--muted);margin-bottom:12px}
+video{width:100%;border-radius:12px;background:#000;border:1px solid var(--border);margin:8px 0 12px}
 table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-size:.72rem;text-transform:uppercase}.chart{height:220px}
 </style></head>
 <body>
-<header><div class="logo">Vantage<span>AI</span></div><div class="badge">LIVE COST GAP</div></header>
+<header><div class="logo">Vantage<span>AI</span></div><div class="badge">FOR COMPANIES PAYING AI BILLS</div></header>
 <main class="wrap">
 <section class="hero">
-<h1>See the gap between <em>list price</em> and what the job actually costs.</h1>
-<p class="lead">Change one URL. Each team keeps its own book. A job is marked saved only when the blended cost is lower.</p>
-<div class="gap"><div class="box"><strong>Direct list price</strong><div class="big yellow" id="list">$1.00</div></div><div class="box"><strong>Vantage cost</strong><div class="big blue" id="vcost">$0.68</div></div><div class="box"><strong>Difference</strong><div class="big green" id="save">32%</div></div></div>
-<a class="btn" href="/pricing">View pricing</a><a class="btn" href="#video" style="background:transparent;color:#f0f4f8;border:1px solid #2a3544">Play how-to</a>
+<h1>This site helps a company <em>pay less for the same AI work.</em></h1>
+<p class="lead">If your app already talks to ChatGPT-style models, you are probably buying every answer from one shop at the sticker price. Vantage AI is the buyer in the middle. It checks more than one supplier, keeps the running average cost, and only accepts the job when that average is cheaper than the price you would have paid.</p>
+<div class="gap">
+<div class="box"><strong>What you pay today</strong><div class="big yellow" id="list">$1.00</div><p class="note">One supplier. List price. No comparison.</p></div>
+<div class="box"><strong>What Vantage costs</strong><div class="big blue" id="vcost">$0.68</div><p class="note">Blended cost after shopping the job.</p></div>
+<div class="box"><strong>The gap you can see</strong><div class="big green" id="save">32%</div><p class="note">This is the reason to use it.</p></div>
+</div>
+<a class="btn" href="/pricing">See plans</a>
+<a class="btn" href="#video" style="background:transparent;color:#f0f4f8;border:1px solid #2a3544">Watch the 20 second setup</a>
+</section>
+<section class="card">
+<h2>Think of it like this</h2>
+<div class="analogies">
+<div class="box"><strong>Grocery run</strong><p>You need milk. One store charges $5. Another charges $3. Vantage is the person who checks both and only buys when the basket is cheaper. Your recipe does not change.</p></div>
+<div class="box"><strong>Taxi vs shared ride</strong><p>The destination is the same. The meter is not. A direct model is the private taxi at the airport rate. Vantage is the dispatcher who sends the ride that still arrives, at a lower fare.</p></div>
+<div class="box"><strong>Wholesale buyer</strong><p>A shop sells a shirt for $40. The buyer sources fabric and stitching for $26 and only locks the order if the total stays under $40. That locked gap is the saving.</p></div>
+</div>
 </section>
 <section class="card" id="video">
-<h2>How to use it</h2>
+<h2>How a new person uses it</h2>
+<p class="note">You do not rebuild the app. You change the address it sends questions to, the way you would change a delivery address without changing the order.</p>
 <video controls playsinline preload="metadata" src="/how-to-use.mp4"></video>
-<p style="color:#8b9cb3;font-size:.85rem">Video file: change the URL, one key per team, lock a job only when the blended cost is lower.</p>
+<div class="steps">
+<div class="box"><strong>1. Keep your app</strong><p>Support bot, agent, or internal tool stays as it is.</p></div>
+<div class="box"><strong>2. Change one address</strong><p>Point it at this site plus /v1. Same style of request.</p></div>
+<div class="box"><strong>3. Give each team a key</strong><p>Like separate expense cards. One team cannot hide another team's bill.</p></div>
+</div>
 </section>
-<section class="card"><h2>Configure in 3 steps</h2><div class="steps"><div class="box"><strong>1. Base URL</strong><p>https://vantage-ai-3dti.onrender.com/v1</p></div><div class="box"><strong>2. Team key</strong><p>sk-arb-demo-free, or one key per client</p></div><div class="box"><strong>3. Watch the gap</strong><p>The table updates as jobs complete</p></div></div></section>
-<div class="kpis"><div class="box"><strong>Savings locked</strong><div class="big green" id="rev">$0.00</div></div><div class="box"><strong>Customer value</strong><div class="big blue" id="in">$0.00</div></div><div class="box"><strong>Provider costs</strong><div class="big yellow" id="out">$0.00</div></div><div class="box"><strong>Jobs</strong><div class="big" id="jobs">0</div></div></div>
-<div class="card"><h2>Cost gap over time</h2><div class="chart"><canvas id="c1"></canvas></div></div>
-<section class="card"><h2>Client cost difference</h2><table><thead><tr><th>Team</th><th>Direct</th><th>Vantage</th><th>Saved</th><th>Why it matters</th></tr></thead><tbody id="clients"></tbody></table></section>
+<section class="card">
+<h2>Who it is for</h2>
+<p class="note">A finance lead who sees the AI invoice growing. A product lead who does not want a rewrite. An engineer who already uses an OpenAI-style client. If you are not paying for model calls, this site will not help you.</p>
+</section>
+<div class="kpis"><div class="box"><strong>Savings locked</strong><div class="big green" id="rev">$0.00</div></div><div class="box"><strong>Customer value</strong><div class="big blue" id="in">$0.00</div></div><div class="box"><strong>Supplier cost</strong><div class="big yellow" id="out">$0.00</div></div><div class="box"><strong>Jobs</strong><div class="big" id="jobs">0</div></div></div>
+<div class="card"><h2>The gap over time</h2><p class="note">Blue is what the job was worth at list price. Yellow is what suppliers were paid. Green is the difference.</p><div class="chart"><canvas id="c1"></canvas></div></div>
+<section class="card"><h2>Each team sees its own bill</h2><table><thead><tr><th>Team</th><th>Direct shop</th><th>Vantage</th><th>Gap</th><th>In plain words</th></tr></thead><tbody id="clients"></tbody></table></section>
+<p class="note" style="text-align:center">Vantage AI does not replace your product. It replaces the habit of buying every answer from the most expensive counter.</p>
 </main>
 <script>
-const clients=[["Acme support","$4,200","$2,900","31%","Ticket bots stay on, invoice drops"],["Northwind agents","$8,750","$6,650","24%","Agent traffic no longer pays list price"],["Internal tools","$1,180","$970","18%","Small teams still see a visible gap"]];
+const clients=[["Support desk","$4,200","$2,900","31%","Same ticket replies, lower invoice"],["Sales agents","$8,750","$6,650","24%","Agents keep working, not at list price"],["Internal tools","$1,180","$970","18%","Even a small team can see the gap"]];
 document.getElementById('clients').innerHTML=clients.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('');
-const c1=new Chart(document.getElementById('c1'),{type:'line',data:{labels:[],datasets:[{label:'Customer value',data:[],borderColor:'#3b82f6',tension:.3,pointRadius:0},{label:'Provider cost',data:[],borderColor:'#eab308',tension:.3,pointRadius:0},{label:'Savings',data:[],borderColor:'#22c55e',tension:.3,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b9cb3'}}},scales:{x:{ticks:{color:'#8b9cb3',maxTicksLimit:6},grid:{color:'#2a3544'}},y:{ticks:{color:'#8b9cb3'},grid:{color:'#2a3544'}}}}});
+const c1=new Chart(document.getElementById('c1'),{type:'line',data:{labels:[],datasets:[{label:'List-price value',data:[],borderColor:'#3b82f6',tension:.3,pointRadius:0},{label:'Supplier cost',data:[],borderColor:'#eab308',tension:.3,pointRadius:0},{label:'Gap',data:[],borderColor:'#22c55e',tension:.3,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b9cb3'}}},scales:{x:{ticks:{color:'#8b9cb3',maxTicksLimit:6},grid:{color:'#2a3544'}},y:{ticks:{color:'#8b9cb3'},grid:{color:'#2a3544'}}}}});
 async function poll(){try{const d=await(await fetch('/api/metrics')).json();document.getElementById('rev').textContent='$'+(d.total_revenue||0).toFixed(2);document.getElementById('in').textContent='$'+(d.total_inflow||0).toFixed(2);document.getElementById('out').textContent='$'+(d.total_outflow||0).toFixed(2);document.getElementById('jobs').textContent=d.total_jobs||0;const inf=d.total_inflow||1,out=d.total_outflow||0;document.getElementById('list').textContent='$'+(inf||1).toFixed(2);document.getElementById('vcost').textContent='$'+(out||0).toFixed(2);document.getElementById('save').textContent=Math.max(0,Math.round((1-out/Math.max(inf,0.01))*100))+'%';const s=d.series||[];c1.data.labels=s.map(p=>new Date(p.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));c1.data.datasets[0].data=s.map(p=>p.inflow);c1.data.datasets[1].data=s.map(p=>p.outflow);c1.data.datasets[2].data=s.map(p=>p.pnl);c1.update('none');}catch(e){}}poll();setInterval(poll,2500);
 </script></body></html>
