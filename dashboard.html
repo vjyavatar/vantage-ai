@@ -23,7 +23,7 @@ header{display:flex;justify-content:space-between;align-items:center;padding:14p
 h1{font-size:2rem;letter-spacing:-.03em;line-height:1.15}h1 em{color:var(--green);font-style:normal}.lead{color:var(--muted);margin:10px 0 14px}
 .btn{display:inline-block;background:var(--green);color:#04110a;padding:10px 14px;border-radius:8px;text-decoration:none;font-weight:750;margin-right:8px}.btn.ghost{background:transparent;color:var(--text);border:1px solid var(--line)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px}.gap{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.lbl{color:var(--muted);font-size:.72rem;letter-spacing:.04em;text-transform:uppercase}.green{color:var(--green)}.blue{color:var(--blue)}.yellow{color:var(--yellow)}
-.ad{border:1px dashed #3a4658;border-radius:12px;min-height:90px;margin:14px 0;padding:12px;color:var(--muted);font-size:.8rem}.ad b{color:var(--text)}
+.ad-slot:empty{display:none}.ad-slot:not(:empty){margin:14px 0;text-align:center}
 .section{margin-top:18px}h2{font-size:1.15rem}.sub{color:var(--muted);margin:4px 0 10px}.steps{display:grid;grid-template-columns:1.1fr .9fr;gap:12px}ol{margin:8px 0 0 18px}li{margin:8px 0}code{background:#0d1117;padding:2px 6px;border-radius:6px}
 .grid3,.kpis{display:grid;gap:10px}.grid3{grid-template-columns:repeat(3,1fr)}.kpis{grid-template-columns:repeat(4,1fr)}.chart{height:200px}
 @media(max-width:800px){.hero,.steps,.grid3,.kpis,.gap{grid-template-columns:1fr}nav{display:none}}
@@ -31,7 +31,7 @@ h1{font-size:2rem;letter-spacing:-.03em;line-height:1.15}h1 em{color:var(--green
 <body>
 <header><div class="logo">Vantage<span>AI</span></div><nav><a href="#scenario">Scenario</a><a href="#start">Start</a><a href="/pricing">Pricing</a></nav></header>
 <main class="wrap">
-<aside class="ad"><b>Advertisement</b><br>Top sponsor slot. Paste an AdSense or direct-sponsor unit here after the publisher account is approved.</aside>
+<div class="ad-slot" id="ad-top" data-ad-slot="top"></div>
 <section class="hero">
 <div>
 <h1>Pay less for the <em>same AI work.</em></h1>
@@ -41,12 +41,13 @@ h1{font-size:2rem;letter-spacing:-.03em;line-height:1.15}h1 em{color:var(--green
 <div class="card"><div class="lbl">Visible gap</div><div class="gap" style="margin-top:8px"><div><span class="lbl">Direct shop</span><b class="yellow" id="list">$1.00</b></div><div><span class="lbl">Vantage</span><b class="blue" id="vcost">$0.68</b></div><div><span class="lbl">Gap</span><b class="green" id="save">32%</b></div></div></div>
 </section>
 <section class="section" id="scenario"><h2>A realistic day</h2><p class="sub">Northwind's support bot answered 8,000 tickets. The model invoice was $4,200. This example shows the workflow. It is not a guaranteed saving.</p><div class="steps"><div class="card"><ol><li>The bot stays in the help desk.</li><li>The engineer points it at <code>https://vantage-ai-3dti.onrender.com/v1</code>.</li><li>Support gets its own key. Sales can have another.</li><li>Each ticket is priced on more than one supplier. The running average is the real cost.</li><li>A saving is locked only when that average is below the old sticker price.</li><li>Finance sees direct shop, Vantage cost, and the gap on this page.</li></ol></div><div class="card"><p>Old shop: <b class="yellow">$4,200</b></p><p>Through Vantage: <b class="blue">$2,900</b></p><p>Illustrative gap: <b class="green">$1,300</b></p></div></div></section>
-<aside class="ad"><b>Advertisement</b><br>Mid-page slot for a relevant sponsor, such as cloud, finance, or developer tools.</aside>
+<div class="ad-slot" id="ad-mid" data-ad-slot="mid"></div>
 <section class="section" id="start"><h2>What you change</h2><div class="grid3"><div class="card"><div class="lbl">01 Keep the app</div><p>The bot or tool stays where it is.</p></div><div class="card"><div class="lbl">02 Change the address</div><p>base_url = this host + /v1.</p></div><div class="card"><div class="lbl">03 One key per team</div><p>Try sk-arb-demo-free, then separate keys.</p></div></div></section>
 <section class="section"><h2>Live gap</h2><div class="kpis"><div class="card"><span class="lbl">Savings</span><b class="green" id="rev">$0.00</b></div><div class="card"><span class="lbl">Customer value</span><b class="blue" id="in">$0.00</b></div><div class="card"><span class="lbl">Supplier cost</span><b class="yellow" id="out">$0.00</b></div><div class="card"><span class="lbl">Jobs</span><b id="jobs">0</b></div></div><div class="card" style="margin-top:10px"><div class="chart"><canvas id="c1"></canvas></div></div></section>
-<aside class="ad"><b>Advertisement</b><br>Footer slot. Direct sponsors can be placed here without hiding the product explanation.</aside>
+<div class="ad-slot" id="ad-footer" data-ad-slot="footer"></div>
 </main>
 <script>
+document.querySelectorAll('.ad-slot').forEach(el=>{if(!el.innerHTML.trim()) el.style.display='none';});
 const c1=new Chart(document.getElementById('c1'),{type:'line',data:{labels:[],datasets:[{label:'List price',data:[],borderColor:'#60a5fa',tension:.3,pointRadius:0},{label:'Supplier cost',data:[],borderColor:'#f5c451',tension:.3,pointRadius:0},{label:'Gap',data:[],borderColor:'#22c55e',tension:.3,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#93a0b4'}}},scales:{x:{ticks:{color:'#93a0b4',maxTicksLimit:6},grid:{color:'#273140'}},y:{ticks:{color:'#93a0b4'},grid:{color:'#273140'}}}}});
 async function poll(){try{const d=await(await fetch('/api/metrics')).json();document.getElementById('rev').textContent='$'+(d.total_revenue||0).toFixed(2);document.getElementById('in').textContent='$'+(d.total_inflow||0).toFixed(2);document.getElementById('out').textContent='$'+(d.total_outflow||0).toFixed(2);document.getElementById('jobs').textContent=d.total_jobs||0;const inf=d.total_inflow||1,out=d.total_outflow||0;document.getElementById('list').textContent='$'+(inf||1).toFixed(2);document.getElementById('vcost').textContent='$'+(out||0).toFixed(2);document.getElementById('save').textContent=Math.max(0,Math.round((1-out/Math.max(inf,0.01))*100))+'%';const s=d.series||[];c1.data.labels=s.map(p=>new Date(p.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));c1.data.datasets[0].data=s.map(p=>p.inflow);c1.data.datasets[1].data=s.map(p=>p.outflow);c1.data.datasets[2].data=s.map(p=>p.pnl);c1.update('none');}catch(e){}}poll();setInterval(poll,2500);
 </script></body></html>
