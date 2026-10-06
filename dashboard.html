@@ -7,77 +7,55 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
 :root{--bg:#0f1419;--card:#1a2332;--border:#2a3544;--text:#f0f4f8;--muted:#8b9cb3;--green:#22c55e;--blue:#3b82f6;--yellow:#eab308}
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
+*{box-sizing:border-box;margin:0;padding:0}body{font-family:Inter,-apple-system,BlinkMacSystemFont,Segoe UI,Roboto,sans-serif;background:var(--bg);color:var(--text);line-height:1.5}
 header{display:flex;justify-content:space-between;align-items:center;padding:14px 24px;border-bottom:1px solid var(--border);background:var(--card);position:sticky;top:0}
-.logo{font-weight:700;font-size:1.2rem}.logo span{color:var(--green)}
-.badge{background:rgba(34,197,94,.12);color:var(--green);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700}
-.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 56px}
-.hero{background:linear-gradient(180deg,#1a2332,#121a24);border:1px solid var(--border);border-radius:16px;padding:32px 28px;margin-bottom:18px}
-h1{font-size:1.8rem;letter-spacing:-.03em;line-height:1.25} h1 em{color:var(--green);font-style:normal}
-.lead{color:var(--muted);max-width:720px;margin:10px 0 16px}
-.gap{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin:16px 0}
-@media(max-width:800px){.gap,.steps,.kpis{grid-template-columns:1fr!important}}
-.box{background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:16px}
-.box strong{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}
-.big{font-size:1.7rem;font-weight:750;margin-top:6px}
-.green{color:var(--green)}.yellow{color:var(--yellow)}.blue{color:var(--blue)}
-.btn{display:inline-block;background:var(--green);color:#04110a;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:700;margin-right:8px}
-.btn.ghost{background:transparent;border:1px solid var(--border);color:var(--text)}
-.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;margin-top:14px}
-.card h2{font-size:.95rem;margin-bottom:10px}
-.player{background:#0d1117;border-radius:12px;min-height:180px;padding:22px;border:1px solid var(--border)}
-.stepn{color:var(--green);font-size:.75rem;font-weight:700;letter-spacing:.06em}
-.player h3{font-size:1.35rem;margin:6px 0 8px}
-.player p{color:var(--muted)}
-.dots{margin-top:14px}
-.dots button{width:10px;height:10px;border-radius:50%;border:0;background:#2a3544;margin-right:6px}
-.dots button.on{background:var(--green)}
-code{background:#0d1117;padding:2px 6px;border-radius:6px}
-.steps{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.steps div{background:#0d1117;border:1px solid var(--border);border-radius:10px;padding:14px}
-.steps b{color:var(--green)}
-table{width:100%;border-collapse:collapse;font-size:.9rem}
-th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}
-th{color:var(--muted);font-size:.72rem;text-transform:uppercase}
-.chart{height:220px}
-.kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:14px}
-.footer{text-align:center;color:var(--muted);font-size:.8rem;margin-top:28px}
-</style>
-</head>
+.logo{font-weight:700;font-size:1.2rem}.logo span{color:var(--green)}.badge{background:rgba(34,197,94,.12);color:var(--green);padding:4px 12px;border-radius:20px;font-size:.72rem;font-weight:700}
+.wrap{max-width:1100px;margin:0 auto;padding:24px 20px 56px}.hero,.card{background:#1a2332;border:1px solid var(--border);border-radius:16px;padding:28px;margin-bottom:16px}
+h1{font-size:1.8rem;letter-spacing:-.03em}h1 em{color:var(--green);font-style:normal}.lead{color:var(--muted);margin:10px 0 16px}
+.gap,.steps,.kpis{display:grid;gap:12px}.gap,.steps{grid-template-columns:1fr 1fr 1fr}.kpis{grid-template-columns:repeat(4,1fr)}
+@media(max-width:800px){.gap,.steps,.kpis{grid-template-columns:1fr}}
+.box{background:#0d1117;border:1px solid var(--border);border-radius:12px;padding:16px}.box strong{display:block;font-size:.75rem;letter-spacing:.05em;text-transform:uppercase;color:var(--muted)}.big{font-size:1.7rem;font-weight:750;margin-top:6px}.green{color:var(--green)}.yellow{color:var(--yellow)}.blue{color:var(--blue)}
+.btn{display:inline-block;background:var(--green);color:#04110a;padding:11px 18px;border-radius:8px;text-decoration:none;font-weight:700;margin-right:8px;border:0;cursor:pointer}
+.stage{position:relative;background:#0d1117;border:1px solid var(--border);border-radius:12px;min-height:280px;overflow:hidden}
+.slide{position:absolute;inset:0;padding:36px;opacity:0;transition:opacity .4s}.slide.on{opacity:1}
+.kicker{color:var(--green);font-size:.75rem;font-weight:700;letter-spacing:.08em}.slide h3{font-size:1.6rem;margin:8px 0}.slide p{color:var(--muted);max-width:640px}
+.bar{position:absolute;left:0;right:0;bottom:0;height:4px;background:#2a3544}.bar i{display:block;height:100%;background:var(--green);width:0}
+.controls{display:flex;gap:8px;align-items:center;margin-top:10px;color:var(--muted);font-size:.85rem}
+table{width:100%;border-collapse:collapse}th,td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--border)}th{color:var(--muted);font-size:.72rem;text-transform:uppercase}.chart{height:220px}
+</style></head>
 <body>
 <header><div class="logo">Vantage<span>AI</span></div><div class="badge">LIVE COST GAP</div></header>
 <main class="wrap">
 <section class="hero">
 <h1>See the gap between <em>list price</em> and what the job actually costs.</h1>
-<p class="lead">Vantage AI sits in front of your existing apps. It prices several models, keeps a running average, and only finalises a job when the blended cost is lower than what you would have paid one provider. Many teams can use it at once. Each team sees its own gap.</p>
-<div class="gap">
-<div class="box"><strong>Direct list price</strong><div class="big yellow" id="list">$1.00</div></div>
-<div class="box"><strong>Vantage cost</strong><div class="big blue" id="vcost">$0.68</div></div>
-<div class="box"><strong>Difference</strong><div class="big green" id="save">32%</div></div>
-</div>
-<a class="btn" href="/pricing">View pricing</a>
-<a class="btn ghost" href="#setup">Configure in 3 steps</a>
+<p class="lead">Change one URL. Each team keeps its own book. A job is marked saved only when the blended cost is lower.</p>
+<div class="gap"><div class="box"><strong>Direct list price</strong><div class="big yellow" id="list">$1.00</div></div><div class="box"><strong>Vantage cost</strong><div class="big blue" id="vcost">$0.68</div></div><div class="box"><strong>Difference</strong><div class="big green" id="save">32%</div></div></div>
+<a class="btn" href="/pricing">View pricing</a><a class="btn" href="#video" style="background:transparent;color:#f0f4f8;border:1px solid #2a3544">Play how-to</a>
 </section>
-<section class="card" id="howto"><h2>How to use it</h2><div class="player"><div class="stepn" id="sn">STEP 1 OF 5</div><h3 id="st">Change one URL</h3><p id="sp">Keep the app. Point the OpenAI-compatible client at Vantage AI. No new SDK.</p></div><div class="dots" id="dots"></div></section>
-<section class="card" id="setup"><h2>Easy configuration</h2><div class="steps"><div><b>1. Base URL</b><p>Set base_url to this host plus /v1.</p></div><div><b>2. Team key</b><p>Use a key per client so savings stay separate.</p></div><div><b>3. Watch the gap</b><p>The table below updates as jobs complete.</p></div></div><pre style="margin-top:12px;background:#0d1117;padding:12px;border-radius:8px;color:var(--muted)">base_url = "https://vantage-ai-3dti.onrender.com/v1"
-api_key  = "sk-arb-demo-free"</pre></section>
-<section class="card"><h2>Why it is competitive</h2><p style="color:var(--muted)">Every job is quoted on a cheaper model and a stronger model. The running average is the real cost, not the last fill. A result is locked only when that average is below your price and the edge is positive. Teams do not share inventory.</p></section>
+<section class="card" id="video">
+<h2>How to use it</h2>
+<div class="stage" id="stage">
+<div class="slide on"><div class="kicker">00:00</div><h3>Change one URL</h3><p>Keep the app. Point the OpenAI client at this host /v1. No new SDK.</p></div>
+<div class="slide"><div class="kicker">00:04</div><h3>One key per team</h3><p>Support, agents, and internal tools stay on separate books.</p></div>
+<div class="slide"><div class="kicker">00:08</div><h3>Both sides are priced</h3><p>A cheaper model and a stronger model update the running average after every fill.</p></div>
+<div class="slide"><div class="kicker">00:12</div><h3>Lock only with an edge</h3><p>If the blended cost is not below your price, it is not marked as saved.</p></div>
+<div class="slide"><div class="kicker">00:16</div><h3>Read the gap</h3><p>Direct price, Vantage cost, and percent saved stay on this page for every team.</p></div>
+<div class="bar"><i id="prog"></i></div>
+</div>
+<div class="controls"><button class="btn" id="play">Play</button><span id="timer">0:00 / 0:20</span></div>
+</section>
+<section class="card"><h2>Configure in 3 steps</h2><div class="steps"><div class="box"><strong>1. Base URL</strong><p>https://vantage-ai-3dti.onrender.com/v1</p></div><div class="box"><strong>2. Team key</strong><p>sk-arb-demo-free, or one key per client</p></div><div class="box"><strong>3. Watch the gap</strong><p>The table updates as jobs complete</p></div></div></section>
 <div class="kpis"><div class="box"><strong>Savings locked</strong><div class="big green" id="rev">$0.00</div></div><div class="box"><strong>Customer value</strong><div class="big blue" id="in">$0.00</div></div><div class="box"><strong>Provider costs</strong><div class="big yellow" id="out">$0.00</div></div><div class="box"><strong>Jobs</strong><div class="big" id="jobs">0</div></div></div>
 <div class="card"><h2>Cost gap over time</h2><div class="chart"><canvas id="c1"></canvas></div></div>
 <section class="card"><h2>Client cost difference</h2><table><thead><tr><th>Team</th><th>Direct</th><th>Vantage</th><th>Saved</th><th>Why it matters</th></tr></thead><tbody id="clients"></tbody></table></section>
-<p class="footer">Vantage AI · Same API · Separate books per team · Savings only when the average cost is lower</p>
 </main>
 <script>
-const steps=[["Change one URL","Keep the app. Point the OpenAI-compatible client at Vantage AI. No new SDK."],["Give each team a key","Support, agents, and internal tools stay on separate books."],["We price both sides","A lower-cost model and a stronger model are averaged after every fill."],["Lock only with an edge","If blended cost is not below your price, it is not marked as saved."],["Read the gap","Direct price, Vantage cost, and the percent saved stay on this page."]];
-let i=0;function show(n){i=n%steps.length;document.getElementById('sn').textContent='STEP '+(i+1)+' OF '+steps.length;document.getElementById('st').textContent=steps[i][0];document.getElementById('sp').textContent=steps[i][1];[...document.querySelectorAll('#dots button')].forEach((b,j)=>b.classList.toggle('on',j===i));}
-steps.forEach((_,j)=>{const b=document.createElement('button');b.onclick=()=>show(j);document.getElementById('dots').appendChild(b);});
-show(0);setInterval(()=>show(i+1),4000);
+const slides=[...document.querySelectorAll('.slide')];let n=0,playing=true,t0=Date.now();
+function show(i){n=i%slides.length;slides.forEach((s,j)=>s.classList.toggle('on',j===n));}
+function tick(){const elapsed=(Date.now()-t0)/1000;const sec=Math.min(20,elapsed%20);document.getElementById('timer').textContent=Math.floor(sec/60)+':' + String(Math.floor(sec%60)).padStart(2,'0') + ' / 0:20';document.getElementById('prog').style.width=(sec/20*100)+'%';if(playing && Math.floor(elapsed/4)%slides.length!==n) show(Math.floor(elapsed/4)%slides.length);}
+setInterval(tick,200);document.getElementById('play').onclick=()=>{playing=!playing;document.getElementById('play').textContent=playing?'Pause':'Play';if(playing)t0=Date.now()-n*4000;};
 const clients=[["Acme support","$4,200","$2,900","31%","Ticket bots stay on, invoice drops"],["Northwind agents","$8,750","$6,650","24%","Agent traffic no longer pays list price"],["Internal tools","$1,180","$970","18%","Small teams still see a visible gap"]];
 document.getElementById('clients').innerHTML=clients.map(r=>'<tr>'+r.map(c=>'<td>'+c+'</td>').join('')+'</tr>').join('');
 const c1=new Chart(document.getElementById('c1'),{type:'line',data:{labels:[],datasets:[{label:'Customer value',data:[],borderColor:'#3b82f6',tension:.3,pointRadius:0},{label:'Provider cost',data:[],borderColor:'#eab308',tension:.3,pointRadius:0},{label:'Savings',data:[],borderColor:'#22c55e',tension:.3,pointRadius:0}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{labels:{color:'#8b9cb3'}}},scales:{x:{ticks:{color:'#8b9cb3',maxTicksLimit:6},grid:{color:'#2a3544'}},y:{ticks:{color:'#8b9cb3'},grid:{color:'#2a3544'}}}}});
-async function poll(){try{const d=await(await fetch('/api/metrics')).json();document.getElementById('rev').textContent='$'+(d.total_revenue||0).toFixed(2);document.getElementById('in').textContent='$'+(d.total_inflow||0).toFixed(2);document.getElementById('out').textContent='$'+(d.total_outflow||0).toFixed(2);document.getElementById('jobs').textContent=d.total_jobs||0;const inf=d.total_inflow||1,out=d.total_outflow||0;const pct=Math.max(0,Math.round((1-out/Math.max(inf,0.01))*100));document.getElementById('list').textContent='$'+(inf||1).toFixed(2);document.getElementById('vcost').textContent='$'+(out||0).toFixed(2);document.getElementById('save').textContent=pct+'%';const s=d.series||[];c1.data.labels=s.map(p=>new Date(p.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));c1.data.datasets[0].data=s.map(p=>p.inflow);c1.data.datasets[1].data=s.map(p=>p.outflow);c1.data.datasets[2].data=s.map(p=>p.pnl);c1.update('none');}catch(e){}}
-poll();setInterval(poll,2500);
-</script>
-</body>
-</html>
+async function poll(){try{const d=await(await fetch('/api/metrics')).json();document.getElementById('rev').textContent='$'+(d.total_revenue||0).toFixed(2);document.getElementById('in').textContent='$'+(d.total_inflow||0).toFixed(2);document.getElementById('out').textContent='$'+(d.total_outflow||0).toFixed(2);document.getElementById('jobs').textContent=d.total_jobs||0;const inf=d.total_inflow||1,out=d.total_outflow||0;document.getElementById('list').textContent='$'+(inf||1).toFixed(2);document.getElementById('vcost').textContent='$'+(out||0).toFixed(2);document.getElementById('save').textContent=Math.max(0,Math.round((1-out/Math.max(inf,0.01))*100))+'%';const s=d.series||[];c1.data.labels=s.map(p=>new Date(p.ts).toLocaleTimeString([],{hour:'2-digit',minute:'2-digit'}));c1.data.datasets[0].data=s.map(p=>p.inflow);c1.data.datasets[1].data=s.map(p=>p.outflow);c1.data.datasets[2].data=s.map(p=>p.pnl);c1.update('none');}catch(e){}}poll();setInterval(poll,2500);
+</script></body></html>
