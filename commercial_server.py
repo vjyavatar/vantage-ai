@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Vantage AI dashboard and OpenAI-compatible API."""
 from __future__ import annotations
-import json, logging, os, random, sys, threading, time, uuid
+import base64, json, logging, os, random, sys, threading, time, uuid
 from http.server import ThreadingHTTPServer, BaseHTTPRequestHandler
 from pathlib import Path
 from typing import Any
@@ -21,6 +21,18 @@ logger = logging.getLogger("vantage")
 orch = OrchestratorAgent()
 metrics = MetricsStore(maxlen=500)
 PRICES = {"general": 0.012, "coding": 0.028, "reasoning": 0.035}
+ROOT = Path(__file__).resolve().parent
+
+def load_video():
+    mp4 = ROOT / "how-to-use.mp4"
+    if mp4.exists():
+        return mp4.read_bytes()
+    parts = sorted(ROOT.glob("video_part_*.b64"))
+    if not parts:
+        return b""
+    return base64.b64decode("".join(p.read_text().strip() for p in parts))
+
+VIDEO = load_video()
 
 def background_traffic():
     prompts = ["Implement a rate limiter", "Explain CAP theorem", "Write binary search", "Design a todo API"]
@@ -42,8 +54,8 @@ def background_traffic():
         except Exception as e:
             logger.debug("bg %s", e)
 
-DASHBOARD_HTML = open(Path(__file__).with_name("dashboard.html"), encoding="utf-8").read()
-PRICING_HTML = open(Path(__file__).with_name("pricing.html"), encoding="utf-8").read()
+DASHBOARD_HTML = open(ROOT / "dashboard.html", encoding="utf-8").read()
+PRICING_HTML = open(ROOT / "pricing.html", encoding="utf-8").read()
 
 class Handler(BaseHTTPRequestHandler):
     def log_message(self, fmt, *args):
@@ -65,6 +77,15 @@ class Handler(BaseHTTPRequestHandler):
         self.wfile.write(body)
     def do_GET(self):
         path = urlparse(self.path).path.rstrip("/") or "/"
+        if path == "/how-to-use.mp4":
+            body = VIDEO
+            self.send_response(200 if body else 404)
+            self.send_header("Content-Type", "video/mp4")
+            self.send_header("Content-Length", str(len(body)))
+            self.send_header("Accept-Ranges", "bytes")
+            self.end_headers()
+            self.wfile.write(body)
+            return
         if path in ("/", "/dashboard"):
             self._html(DASHBOARD_HTML); return
         if path == "/pricing":
@@ -100,7 +121,7 @@ class Handler(BaseHTTPRequestHandler):
 def main():
     threading.Thread(target=background_traffic, daemon=True).start()
     server = ThreadingHTTPServer((HOST, PORT), Handler)
-    logger.info("Vantage AI on %s:%s", HOST, PORT)
+    logger.info("Vantage AI on %s:%s video=%s", HOST, PORT, len(VIDEO))
     server.serve_forever()
 
 if __name__ == "__main__":
